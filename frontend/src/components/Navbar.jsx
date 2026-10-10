@@ -58,8 +58,8 @@ export default function Navbar() {
             <span>Players</span>
           </Link>
 
-          {/* Admin link */}
-          {admin ? (
+          {/* Admin link - only displayed if already authenticated */}
+          {admin && (
             <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
               <Link
                 to="/admin-panel/dashboard"
@@ -76,14 +76,6 @@ export default function Navbar() {
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
-          ) : (
-            <Link
-              to="/admin-panel"
-              className="px-3 py-2 rounded-xl text-sm font-medium text-slate-400 hover:text-amber-400 transition-colors flex items-center gap-1.5"
-            >
-              <Shield className="w-4 h-4" />
-              <span>Admin Login</span>
-            </Link>
           )}
         </nav>
 
@@ -137,41 +129,31 @@ export default function Navbar() {
             <span>Competitor Roster</span>
           </Link>
 
-          <div className="pt-2 border-t border-slate-800">
-            {admin ? (
-              <div className="space-y-2">
-                <Link
-                  to="/admin-panel/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold bg-amber-500 text-slate-950"
-                >
-                  <span className="flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    <span>Admin Control Dashboard</span>
-                  </span>
-                </Link>
-                <button
-                  onClick={() => {
-                    logout();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-red-400 bg-red-500/10 hover:bg-red-500/20"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                  <span>Log Out ({admin.username})</span>
-                </button>
-              </div>
-            ) : (
+          {/* Admin shortcuts in mobile drawer - only shown if authenticated */}
+          {admin && (
+            <div className="pt-2 border-t border-slate-800 space-y-2">
               <Link
-                to="/admin-panel"
+                to="/admin-panel/dashboard"
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-slate-300 hover:bg-slate-900"
+                className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold bg-amber-500 text-slate-950"
               >
-                <Shield className="w-4 h-4 text-slate-400" />
-                <span>Arbiter / Admin Login</span>
+                <span className="flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  <span>Admin Control Dashboard</span>
+                </span>
               </Link>
-            )}
-          </div>
+              <button
+                onClick={() => {
+                  logout();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-red-400 bg-red-500/10 hover:bg-red-500/20"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Log Out ({admin.username})</span>
+              </button>
+            </div>
+          )}
         </div>
       )}
     </header>
