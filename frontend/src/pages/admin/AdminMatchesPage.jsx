@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Swords, Clock, AlertTriangle, CheckCircle2, Search, Edit3, X, Shield, ArrowUpRight } from 'lucide-react';
+import { apiFetch } from '../../utils/api';
 
 export default function AdminMatchesPage() {
   const [matches, setMatches] = useState([]);
@@ -21,7 +22,7 @@ export default function AdminMatchesPage() {
       const url = selectedTournament
         ? `/api/admin/matches?tournamentId=${selectedTournament}`
         : '/api/admin/matches';
-      const res = await fetch(url);
+      const res = await apiFetch(url);
       const data = await res.json();
       if (Array.isArray(data)) setMatches(data);
     } catch (err) {
@@ -33,7 +34,7 @@ export default function AdminMatchesPage() {
 
   const fetchTournaments = async () => {
     try {
-      const res = await fetch('/api/admin/tournaments');
+      const res = await apiFetch('/api/admin/tournaments');
       const data = await res.json();
       if (Array.isArray(data)) setTournaments(data);
     } catch (err) {
@@ -66,7 +67,7 @@ export default function AdminMatchesPage() {
     setIsSubmitting(true);
     setErrorMsg('');
     try {
-      const res = await fetch(`/api/admin/matches/${correctingMatch.id}/result`, {
+      const res = await apiFetch(`/api/admin/matches/${correctingMatch.id}/result`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

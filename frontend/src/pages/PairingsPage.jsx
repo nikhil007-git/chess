@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Swords, Trophy, ArrowLeft, Play, Clock, CheckCircle2, AlertCircle, X, Shield } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../utils/api';
 
 export default function PairingsPage() {
   const { id } = useParams();
@@ -20,7 +21,7 @@ export default function PairingsPage() {
   const fetchPairings = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/tournaments/${id}/pairings`);
+      const res = await apiFetch(`/api/tournaments/${id}/pairings`);
       const resData = await res.json();
       if (!resData.error) {
         setData(resData);
@@ -43,7 +44,7 @@ export default function PairingsPage() {
   const handleGenerateNextRound = async () => {
     try {
       setGenerating(true);
-      const res = await fetch(`/api/admin/tournaments/${id}/rounds`, {
+      const res = await apiFetch(`/api/admin/tournaments/${id}/rounds`, {
         method: 'POST',
       });
       const resData = await res.json();
@@ -68,7 +69,7 @@ export default function PairingsPage() {
     setSubmittingResult(true);
 
     try {
-      const res = await fetch(`/api/admin/matches/${selectedMatch.id}/result`, {
+      const res = await apiFetch(`/api/admin/matches/${selectedMatch.id}/result`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ result: resultOutcome }),

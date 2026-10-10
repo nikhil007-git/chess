@@ -13,6 +13,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust reverse proxies (Render, Cloudflare, AWS) so secure cookies work properly
+app.set('trust proxy', 1);
+
 // CORS setup for local development and production
 const allowedOrigins = [
   'http://localhost:5173',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Trophy, Users, Swords, Clock, PlusCircle, ArrowUpRight, Activity } from 'lucide-react';
+import { apiFetch } from '../../utils/api';
 
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState({
@@ -16,7 +17,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     // Fetch dashboard stats from API
-    fetch('/api/admin/dashboard-stats')
+    apiFetch('/api/admin/dashboard-stats')
       .then((res) => res.json())
       .then((data) => {
         if (data && !data.error) setStats(data);

@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import prisma from '../db.js';
+import { createToken, verifyToken } from '../utils/token.js';
 
 const loginSchema = z.object({
   username: z.string().min(1, 'Username is required'),
@@ -45,8 +46,16 @@ export const login = async (req, res) => {
       role: admin.role,
     };
 
+    // Also generate resilient token for cross-origin environments (e.g. Vercel + Render)
+    const token = createToken({
+      id: admin.id,
+      username: admin.username,
+      role: admin.role,
+    });
+
     return res.json({
       message: 'Login successful',
+      token,
       admin: {
         id: admin.id,
         username: admin.username,
@@ -74,12 +83,30 @@ export const logout = (req, res) => {
 };
 
 export const getSession = (req, res) => {
+  // 1. Check session cookie
   if (req.session && req.session.admin) {
     return res.json({
       authenticated: true,
       admin: req.session.admin,
     });
   }
+
+  // 2. Check Bearer token header
+  const authHeader = req.headers.authorization;
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7).trim();
+    const verified = verifyToken(token);
+    if (verified) {
+      if (req.session) {
+        req.session.admin = verified;
+      }
+      return res.json({
+        authenticated: true,
+        admin: verified,
+      });
+    }
+  }
+
   return res.json({
     authenticated: false,
     admin: null,

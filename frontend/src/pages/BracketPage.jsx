@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Trophy, Swords, ArrowLeft, Play, Award, CheckCircle2, AlertCircle, X, Shield, Clock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { apiFetch } from '../utils/api';
 
 export default function BracketPage() {
   const { id } = useParams();
@@ -21,7 +22,7 @@ export default function BracketPage() {
   const fetchBracket = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/tournaments/${id}/bracket`);
+      const res = await apiFetch(`/api/tournaments/${id}/bracket`);
       const resData = await res.json();
       if (!resData.error) setData(resData);
     } catch (err) {
@@ -38,7 +39,7 @@ export default function BracketPage() {
   const handleGenerateBracket = async () => {
     try {
       setGenerating(true);
-      const res = await fetch(`/api/admin/tournaments/${id}/rounds`, {
+      const res = await apiFetch(`/api/admin/tournaments/${id}/rounds`, {
         method: 'POST',
       });
       const resData = await res.json();
@@ -71,7 +72,7 @@ export default function BracketPage() {
         tiebreakResolution: resultOutcome === 'DRAW' ? tiebreakMethod : undefined,
       };
 
-      const res = await fetch(`/api/admin/matches/${selectedMatch.id}/result`, {
+      const res = await apiFetch(`/api/admin/matches/${selectedMatch.id}/result`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

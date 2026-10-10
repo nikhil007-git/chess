@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Settings, Shield, KeyRound, Database, CheckCircle2, Clock, Award, Sliders } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { apiFetch } from '../../utils/api';
 
 export default function AdminSettingsPage() {
   const { admin } = useAuth();
@@ -37,7 +38,7 @@ export default function AdminSettingsPage() {
     }
 
     try {
-      const res = await fetch('/api/admin/change-password', {
+      const res = await apiFetch('/api/admin/change-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ oldPassword, newPassword }),

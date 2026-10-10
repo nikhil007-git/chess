@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Users, Plus, Search, Edit2, Archive, CheckCircle, AlertCircle, X, ShieldAlert } from 'lucide-react';
+import { apiFetch } from '../../utils/api';
 
 export default function AdminPlayersPage() {
   const [players, setPlayers] = useState([]);
@@ -29,7 +30,7 @@ export default function AdminPlayersPage() {
       const url = filterStatus === 'ALL' 
         ? `/api/admin/players?search=${encodeURIComponent(search)}`
         : `/api/admin/players?search=${encodeURIComponent(search)}&status=${filterStatus}`;
-      const res = await fetch(url);
+      const res = await apiFetch(url);
       const data = await res.json();
       if (Array.isArray(data)) {
         setPlayers(data);
@@ -87,13 +88,13 @@ export default function AdminPlayersPage() {
 
       let res;
       if (editingPlayer) {
-        res = await fetch(`/api/admin/players/${editingPlayer.id}`, {
+        res = await apiFetch(`/api/admin/players/${editingPlayer.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
         });
       } else {
-        res = await fetch('/api/admin/players', {
+        res = await apiFetch('/api/admin/players', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
@@ -117,7 +118,7 @@ export default function AdminPlayersPage() {
   const handleArchive = async () => {
     if (!playerToArchive) return;
     try {
-      const res = await fetch(`/api/admin/players/${playerToArchive.id}`, {
+      const res = await apiFetch(`/api/admin/players/${playerToArchive.id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
@@ -131,7 +132,7 @@ export default function AdminPlayersPage() {
 
   const handleReactivate = async (player) => {
     try {
-      const res = await fetch(`/api/admin/players/${player.id}`, {
+      const res = await apiFetch(`/api/admin/players/${player.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'ACTIVE' }),

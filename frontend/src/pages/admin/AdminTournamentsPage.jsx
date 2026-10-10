@@ -15,6 +15,7 @@ import {
   UserPlus,
   Trash2,
 } from 'lucide-react';
+import { apiFetch } from '../../utils/api';
 
 export default function AdminTournamentsPage() {
   const [tournaments, setTournaments] = useState([]);
@@ -63,7 +64,7 @@ export default function AdminTournamentsPage() {
   const fetchTournaments = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/admin/tournaments');
+      const res = await apiFetch('/api/admin/tournaments');
       const data = await res.json();
       if (Array.isArray(data)) setTournaments(data);
     } catch (err) {
@@ -75,7 +76,7 @@ export default function AdminTournamentsPage() {
 
   const fetchPlayers = async () => {
     try {
-      const res = await fetch('/api/admin/players?status=ACTIVE');
+      const res = await apiFetch('/api/admin/players?status=ACTIVE');
       const data = await res.json();
       if (Array.isArray(data)) setPlayers(data);
     } catch (err) {
@@ -133,7 +134,7 @@ export default function AdminTournamentsPage() {
 
     setAddingQuickPlayer(true);
     try {
-      const res = await fetch('/api/admin/players', {
+      const res = await apiFetch('/api/admin/players', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -169,7 +170,7 @@ export default function AdminTournamentsPage() {
 
       const initialStatus = formData.selectedPlayerIds.length >= 2 ? 'UPCOMING' : 'DRAFT';
 
-      const res = await fetch('/api/admin/tournaments', {
+      const res = await apiFetch('/api/admin/tournaments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -199,7 +200,7 @@ export default function AdminTournamentsPage() {
 
   const handleStatusChange = async (tourneyId, newStatus) => {
     try {
-      const res = await fetch(`/api/admin/tournaments/${tourneyId}`, {
+      const res = await apiFetch(`/api/admin/tournaments/${tourneyId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
@@ -213,7 +214,7 @@ export default function AdminTournamentsPage() {
   const openManageParticipants = async (tourney) => {
     setManageTourney(tourney);
     try {
-      const res = await fetch(`/api/tournaments/${tourney.id}`);
+      const res = await apiFetch(`/api/tournaments/${tourney.id}`);
       const data = await res.json();
       setTourneyParticipants(data.participants || []);
     } catch (err) {
@@ -224,7 +225,7 @@ export default function AdminTournamentsPage() {
   const handleAddParticipantToTournament = async () => {
     if (!selectedAddPlayerId || !manageTourney) return;
     try {
-      const res = await fetch(`/api/admin/tournaments/${manageTourney.id}/participants`, {
+      const res = await apiFetch(`/api/admin/tournaments/${manageTourney.id}/participants`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ playerIds: [selectedAddPlayerId] }),
@@ -242,7 +243,7 @@ export default function AdminTournamentsPage() {
   const handleRemoveParticipant = async (playerId) => {
     if (!manageTourney) return;
     try {
-      const res = await fetch(`/api/admin/tournaments/${manageTourney.id}/participants/${playerId}`, {
+      const res = await apiFetch(`/api/admin/tournaments/${manageTourney.id}/participants/${playerId}`, {
         method: 'DELETE',
       });
       if (res.ok) {

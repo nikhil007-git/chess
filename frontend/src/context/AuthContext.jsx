@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { apiFetch } from '../utils/api';
 
 const AuthContext = createContext(null);
 
@@ -8,11 +9,12 @@ export const AuthProvider = ({ children }) => {
 
   const checkSession = async () => {
     try {
-      const res = await fetch('/api/admin/auth/session');
+      const res = await apiFetch('/api/admin/auth/session');
       const data = await res.json();
       if (data.authenticated) {
         setAdmin(data.admin);
       } else {
+        localStorage.removeItem('chess_admin_token');
         setAdmin(null);
       }
     } catch (err) {
@@ -28,23 +30,30 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    const res = await fetch('/api/admin/auth/login', {
+    const res = await apiFetch('/api/admin/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password }),
     });
+
     const data = await res.json();
     if (!res.ok) {
-      throw new Error(data.message || data.error || 'Login failed');
+      throw new Error(data.message || data.error || 'Invalid username or password');
     }
+
+    if (data.token) {
+      localStorage.setItem('chess_admin_token', data.token);
+    }
+
     setAdmin(data.admin);
     return data.admin;
   };
 
   const logout = async () => {
     try {
-      await fetch('/api/admin/auth/logout', { method: 'POST' });
+      await apiFetch('/api/admin/auth/logout', { method: 'POST' });
     } finally {
+      localStorage.removeItem('chess_admin_token');
       setAdmin(null);
     }
   };

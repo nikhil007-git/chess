@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import Chessboard from '../components/Chessboard';
+import { apiFetch } from '../utils/api';
 
 export default function MatchPage() {
   const { id } = useParams();
@@ -39,7 +40,7 @@ export default function MatchPage() {
   // Fetch authoritative state from server
   const fetchMatchState = async () => {
     try {
-      const res = await fetch(`/api/matches/${id}`);
+      const res = await apiFetch(`/api/matches/${id}`);
       const data = await res.json();
       if (!data.error) {
         setMatch(data);
@@ -89,7 +90,7 @@ export default function MatchPage() {
 
   const handleClockAction = async (action, extraParams = {}) => {
     try {
-      const res = await fetch(`/api/admin/matches/${id}/clock`, {
+      const res = await apiFetch(`/api/admin/matches/${id}/clock`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action, ...extraParams }),
@@ -109,7 +110,7 @@ export default function MatchPage() {
 
   const handleMove = async (moveInfo) => {
     try {
-      const res = await fetch(`/api/matches/${id}/move`, {
+      const res = await apiFetch(`/api/matches/${id}/move`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(moveInfo),
@@ -144,7 +145,7 @@ export default function MatchPage() {
 
   const handleQuickResult = async (result) => {
     try {
-      await fetch(`/api/admin/matches/${id}/result`, {
+      await apiFetch(`/api/admin/matches/${id}/result`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ result }),
