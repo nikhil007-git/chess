@@ -119,8 +119,10 @@ export default function PlayersPage() {
                   </div>
 
                   <div className="text-xs text-slate-400 flex items-center gap-2 mt-3 pt-2.5 border-t border-slate-850">
-                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-slate-600"></span>
-                    <span className="truncate">{p.club || 'Independent Competitor'}</span>
+                    <span className="inline-block w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span className="truncate font-mono text-slate-300 font-medium">
+                      {p.collegeId ? `College ID: ${p.collegeId}` : (p.club || 'Competitor')}
+                    </span>
                   </div>
                 </div>
 

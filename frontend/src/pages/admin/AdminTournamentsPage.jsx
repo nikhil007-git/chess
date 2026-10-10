@@ -41,8 +41,7 @@ export default function AdminTournamentsPage() {
 
   // Quick player creation inside wizard
   const [newPlayerName, setNewPlayerName] = useState('');
-  const [newPlayerRating, setNewPlayerRating] = useState(1200);
-  const [newPlayerClub, setNewPlayerClub] = useState('');
+  const [newPlayerCollegeId, setNewPlayerCollegeId] = useState('');
   const [addingQuickPlayer, setAddingQuickPlayer] = useState(false);
 
   // Manage participants modal
@@ -139,8 +138,7 @@ export default function AdminTournamentsPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fullName: newPlayerName.trim(),
-          rating: parseInt(newPlayerRating, 10) || 1200,
-          club: newPlayerClub.trim() || undefined,
+          collegeId: newPlayerCollegeId.trim() || undefined,
         }),
       });
       const created = await res.json();
@@ -153,8 +151,7 @@ export default function AdminTournamentsPage() {
         selectedPlayerIds: [...prev.selectedPlayerIds, created.id],
       }));
       setNewPlayerName('');
-      setNewPlayerClub('');
-      setNewPlayerRating(1200);
+      setNewPlayerCollegeId('');
     } catch (err) {
       setWizardError(err.message);
     } finally {
@@ -599,29 +596,22 @@ export default function AdminTournamentsPage() {
                     <form onSubmit={handleQuickAddPlayer} className="flex flex-col sm:flex-row gap-2">
                       <input
                         type="text"
-                        placeholder="Player Full Name"
+                        placeholder="Player Name (e.g. Aryan Sharma)"
                         value={newPlayerName}
                         onChange={(e) => setNewPlayerName(e.target.value)}
-                        className="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Rating"
-                        value={newPlayerRating}
-                        onChange={(e) => setNewPlayerRating(e.target.value)}
-                        className="w-24 px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-mono"
+                        className="flex-1 px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-amber-400"
                       />
                       <input
                         type="text"
-                        placeholder="Club (optional)"
-                        value={newPlayerClub}
-                        onChange={(e) => setNewPlayerClub(e.target.value)}
-                        className="w-32 px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white"
+                        placeholder="College ID (e.g. 2024CS1042)"
+                        value={newPlayerCollegeId}
+                        onChange={(e) => setNewPlayerCollegeId(e.target.value)}
+                        className="w-full sm:w-44 px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white font-mono focus:outline-none focus:border-amber-400"
                       />
                       <button
                         type="submit"
                         disabled={addingQuickPlayer || !newPlayerName.trim()}
-                        className="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition-colors disabled:opacity-50"
+                        className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs rounded-xl transition-colors disabled:opacity-50 shrink-0"
                       >
                         {addingQuickPlayer ? 'Adding...' : 'Add Player'}
                       </button>
@@ -680,7 +670,9 @@ export default function AdminTournamentsPage() {
                                 />
                                 <div>
                                   <div className="font-semibold text-sm">{p.fullName}</div>
-                                  <div className="text-xs text-slate-500">{p.club || 'Independent'}</div>
+                                  <div className="text-xs text-slate-400 font-mono">
+                                    {p.collegeId ? `ID: ${p.collegeId}` : 'No College ID'}
+                                  </div>
                                 </div>
                               </div>
                               <span className="font-mono text-xs font-bold text-amber-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">

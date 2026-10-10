@@ -2,7 +2,8 @@ import { z } from 'zod';
 import prisma from '../db.js';
 
 const playerSchema = z.object({
-  fullName: z.string().min(1, 'Full name is required').trim(),
+  fullName: z.string().min(1, 'Player name is required').trim(),
+  collegeId: z.string().trim().optional().or(z.literal('')),
   username: z.string().trim().optional().or(z.literal('')),
   email: z.string().email('Invalid email address').optional().or(z.literal('')),
   rating: z.number().int().min(0, 'Rating cannot be negative').default(1200),
@@ -27,9 +28,10 @@ export const getPlayers = async (req, res) => {
 
     if (search) {
       where.OR = [
-        { fullName: { contains: search } },
-        { username: { contains: search } },
-        { club: { contains: search } },
+        { fullName: { contains: search, mode: 'insensitive' } },
+        { collegeId: { contains: search, mode: 'insensitive' } },
+        { username: { contains: search, mode: 'insensitive' } },
+        { club: { contains: search, mode: 'insensitive' } },
       ];
     }
 
@@ -68,9 +70,10 @@ export const getAllAdminPlayers = async (req, res) => {
     if (status) where.status = status;
     if (search) {
       where.OR = [
-        { fullName: { contains: search } },
-        { username: { contains: search } },
-        { club: { contains: search } },
+        { fullName: { contains: search, mode: 'insensitive' } },
+        { collegeId: { contains: search, mode: 'insensitive' } },
+        { username: { contains: search, mode: 'insensitive' } },
+        { club: { contains: search, mode: 'insensitive' } },
       ];
     }
 
@@ -159,6 +162,7 @@ export const getPlayerById = async (req, res) => {
       player: {
         id: player.id,
         fullName: player.fullName,
+        collegeId: player.collegeId,
         username: player.username,
         email: player.email,
         rating: player.rating,
@@ -193,7 +197,13 @@ export const createPlayer = async (req, res) => {
       });
     }
 
-    const { fullName, username, email, rating, club } = parseResult.data;
+    const { fullName, collegeId, username, email, rating, club } = parseResult.data;
+
+    // Check unique collegeId if provided
+    if (collegeId) {
+      const existing = await prisma.player.findUnique({ where: { collegeId } });
+      if (existing) return res.status(409).json({ error: 'College ID is already registered' });
+    }
 
     // Check unique username or email if provided
     if (username) {
@@ -208,6 +218,7 @@ export const createPlayer = async (req, res) => {
     const player = await prisma.player.create({
       data: {
         fullName,
+        collegeId: collegeId || null,
         username: username || null,
         email: email || null,
         rating: rating ?? 1200,
@@ -236,8 +247,16 @@ export const updatePlayer = async (req, res) => {
     }
 
     const data = { ...parseResult.data };
+    if (data.collegeId === '') data.collegeId = null;
     if (data.username === '') data.username = null;
     if (data.email === '') data.email = null;
+
+    if (data.collegeId) {
+      const existing = await prisma.player.findFirst({
+        where: { collegeId: data.collegeId, NOT: { id } },
+      });
+      if (existing) return res.status(409).json({ error: 'College ID is already in use by another player' });
+    }
 
     const updated = await prisma.player.update({
       where: { id },

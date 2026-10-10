@@ -67,9 +67,15 @@ export default function PlayerDetailPage() {
               {player.fullName}
             </h1>
             <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-slate-400">
-              {player.username && <span className="font-medium text-slate-300">@{player.username}</span>}
-              <span>•</span>
-              <span>{player.club || 'Independent'}</span>
+              {player.collegeId && (
+                <>
+                  <span className="font-mono text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+                    College ID: {player.collegeId}
+                  </span>
+                  <span>•</span>
+                </>
+              )}
+              <span>{player.club || 'Competitor'}</span>
               <span>•</span>
               <span className="flex items-center gap-1">
                 <Calendar className="w-3.5 h-3.5" />

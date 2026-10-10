@@ -20,6 +20,7 @@ model Admin {
 model Player {
   id           String                  @id @default(uuid())
   fullName     String
+  collegeId    String?                 @unique
   username     String?                 @unique
   email        String?                 @unique
   rating       Int                     @default(1200)
