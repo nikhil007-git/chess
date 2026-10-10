@@ -66,6 +66,22 @@ app.use('/api/admin', adminDashboardRouter);
 app.use('/api', matchRoutes);
 app.use('/api/admin', adminMatchRouter);
 
+// Root status endpoint
+app.get('/', (req, res) => {
+  res.json({
+    status: 'online',
+    service: 'Chess Tournament Management System API',
+    version: '1.0.0',
+    documentation: 'PRD v1.0 Compliant REST API',
+    endpoints: {
+      health: '/api/health',
+      tournaments: '/api/tournaments',
+      players: '/api/players',
+    },
+    message: 'Backend is running successfully! Use this URL in your Vercel frontend as VITE_API_URL.',
+  });
+});
+
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
