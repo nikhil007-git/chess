@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Trophy, Swords, ArrowLeft, Award, Medal, Users, HelpCircle } from 'lucide-react';
+import { Trophy, Swords, ArrowLeft, Award, Medal, Users, HelpCircle, Crown, Sparkles } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 
 export default function StandingsPage() {
   const { id } = useParams();
@@ -8,7 +9,7 @@ export default function StandingsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/tournaments/${id}/standings`)
+    apiFetch(`/api/tournaments/${id}/standings`)
       .then((res) => res.json())
       .then((resData) => {
         if (!resData.error) setData(resData);
@@ -41,6 +42,9 @@ export default function StandingsPage() {
   }
 
   const { tournament, standings } = data;
+  const top1 = standings[0];
+  const top2 = standings[1];
+  const top3 = standings[2];
 
   return (
     <div className="space-y-8">
@@ -53,14 +57,14 @@ export default function StandingsPage() {
           </Link>
           <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight flex items-center gap-3">
             <Trophy className="w-7 h-7 text-amber-400" />
-            <span>{tournament.name} — Swiss Standings</span>
+            <span>{tournament.name} — Standings</span>
           </h1>
         </div>
 
         <div className="flex items-center gap-2">
           <Link
             to={`/tournaments/${tournament.id}/pairings`}
-            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs border border-slate-700 transition-colors flex items-center gap-2"
+            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs border border-slate-700 transition-colors flex items-center gap-2 shadow-sm"
           >
             <Swords className="w-4 h-4 text-amber-400" />
             <span>Round Pairings</span>
@@ -68,19 +72,100 @@ export default function StandingsPage() {
         </div>
       </div>
 
+      {/* Top 3 Podium Spotlight (if at least 1 player has played or is seeded) */}
+      {standings.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+          {/* 2nd Place */}
+          {top2 ? (
+            <div className="order-2 sm:order-1 bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-lg relative overflow-hidden">
+              <div className="flex items-center justify-between mb-3">
+                <span className="w-7 h-7 rounded-full bg-slate-300 text-slate-950 font-black text-xs flex items-center justify-center shadow">
+                  2
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Runner Up</span>
+              </div>
+              <div>
+                <Link to={`/players/${top2.playerId}`} className="font-extrabold text-white text-base hover:text-amber-400 transition-colors block line-clamp-1">
+                  {top2.player?.fullName}
+                </Link>
+                <span className="text-xs text-slate-400 block">{top2.player?.club || 'Independent'}</span>
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-slate-400">Score</span>
+                <span className="font-mono font-black text-base text-white">{top2.points} pts</span>
+              </div>
+            </div>
+          ) : (
+            <div className="order-2 sm:order-1 hidden sm:block" />
+          )}
+
+          {/* 1st Place Champion */}
+          {top1 && (
+            <div className="order-1 sm:order-2 bg-gradient-to-b from-amber-500/10 via-slate-900 to-slate-900 border-2 border-amber-400/80 rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-xl shadow-amber-500/10 relative overflow-hidden sm:-translate-y-2">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-8 h-8 rounded-full bg-amber-400 text-slate-950 font-black text-sm flex items-center justify-center shadow-lg shadow-amber-500/30">
+                    1
+                  </span>
+                  <Crown className="w-5 h-5 text-amber-400 fill-amber-400" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                  Tournament Leader
+                </span>
+              </div>
+              <div>
+                <Link to={`/players/${top1.playerId}`} className="font-black text-white text-lg sm:text-xl hover:text-amber-400 transition-colors block line-clamp-1">
+                  {top1.player?.fullName}
+                </Link>
+                <span className="text-xs text-slate-400 block">{top1.player?.club || 'Independent'}</span>
+              </div>
+              <div className="mt-4 pt-3 border-t border-amber-500/20 flex items-center justify-between text-xs">
+                <span className="text-amber-300 font-semibold">Total Points</span>
+                <span className="font-mono font-black text-xl text-amber-400">{top1.points} pts</span>
+              </div>
+            </div>
+          )}
+
+          {/* 3rd Place */}
+          {top3 ? (
+            <div className="order-3 bg-slate-900/80 border border-slate-800 rounded-2xl p-4 sm:p-5 flex flex-col justify-between shadow-lg relative overflow-hidden">
+              <div className="flex items-center justify-between mb-3">
+                <span className="w-7 h-7 rounded-full bg-amber-800 text-amber-100 font-black text-xs flex items-center justify-center shadow">
+                  3
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">3rd Place</span>
+              </div>
+              <div>
+                <Link to={`/players/${top3.playerId}`} className="font-extrabold text-white text-base hover:text-amber-400 transition-colors block line-clamp-1">
+                  {top3.player?.fullName}
+                </Link>
+                <span className="text-xs text-slate-400 block">{top3.player?.club || 'Independent'}</span>
+              </div>
+              <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
+                <span className="text-slate-400">Score</span>
+                <span className="font-mono font-black text-base text-white">{top3.points} pts</span>
+              </div>
+            </div>
+          ) : (
+            <div className="order-3 hidden sm:block" />
+          )}
+        </div>
+      )}
+
       {/* Standings Table Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
-        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+      <div className="bg-slate-900/90 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl backdrop-blur-md">
+        <div className="p-5 sm:p-6 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Award className="w-5 h-5 text-amber-400" />
-            <h2 className="text-lg font-bold text-white">Live Classification</h2>
+            <h2 className="text-base sm:text-lg font-bold text-white">Full Table Classification</h2>
           </div>
           <span className="text-xs text-slate-400 font-mono">
-            {standings.length} Competitors Ranked
+            {standings.length} Competitors
           </span>
         </div>
 
-        <div className="overflow-x-auto -mx-2 sm:mx-0">
+        <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm text-slate-300 min-w-[580px] sm:min-w-full">
             <thead className="bg-slate-950/70 text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
               <tr>
@@ -106,7 +191,9 @@ export default function StandingsPage() {
                     key={s.playerId}
                     className={`transition-colors ${
                       s.rank === 1
-                        ? 'bg-amber-500/5 hover:bg-amber-500/10'
+                        ? 'bg-amber-500/10 hover:bg-amber-500/15'
+                        : s.rank <= 3
+                        ? 'bg-slate-800/30 hover:bg-slate-800/50'
                         : 'hover:bg-slate-800/30'
                     }`}
                   >
@@ -201,8 +288,8 @@ export default function StandingsPage() {
             <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
             <span className="font-semibold text-slate-300">FIDE Tie-Breaks:</span>
           </div>
-          <span><strong>BH (Buchholz):</strong> Sum of scores of all opponents faced.</span>
-          <span><strong>SB (Sonneborn-Berger):</strong> Points scored against opponents defeated + 0.5 &times; drawn opponents.</span>
+          <span><strong>BH (Buchholz):</strong> Total score of all opponents played.</span>
+          <span><strong>SB (Sonneborn-Berger):</strong> Opponent quality weighting for draws & wins.</span>
         </div>
       </div>
     </div>

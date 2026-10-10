@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Trophy, Swords, Award, Calendar, CheckCircle2, XCircle, MinusCircle } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 
 export default function PlayerDetailPage() {
   const { id } = useParams();
@@ -8,7 +9,7 @@ export default function PlayerDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/players/${id}`)
+    apiFetch(`/api/players/${id}`)
       .then((res) => res.json())
       .then((result) => {
         if (!result.error) setData(result);

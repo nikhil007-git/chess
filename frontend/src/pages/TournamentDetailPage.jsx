@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Trophy, Users, Clock, Swords, ArrowLeft, Award, Calendar, ListOrdered } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 
 export default function TournamentDetailPage() {
   const { id } = useParams();
@@ -8,7 +9,7 @@ export default function TournamentDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/tournaments/${id}`)
+    apiFetch(`/api/tournaments/${id}`)
       .then((res) => res.json())
       .then((data) => {
         if (!data.error) setTournament(data);
