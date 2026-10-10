@@ -410,27 +410,27 @@ export default function AdminTournamentsPage() {
 
       {/* Guided Tournament Creation Modal Wizard */}
       {isWizardOpen && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl relative max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl w-full max-w-2xl p-4 sm:p-8 shadow-2xl relative max-h-[92vh] flex flex-col">
             <button
               onClick={() => setIsWizardOpen(false)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-white"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 text-slate-400 hover:text-white"
             >
               <X className="w-5 h-5" />
             </button>
 
             {/* Step indicators */}
-            <div className="flex items-center gap-2 mb-6 border-b border-slate-800 pb-4">
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${step === 1 ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
-                1. General & Format
+            <div className="flex items-center gap-1.5 sm:gap-2 mb-4 sm:mb-6 border-b border-slate-800 pb-3 sm:pb-4 overflow-x-auto no-scrollbar">
+              <span className={`text-[11px] sm:text-xs font-bold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap ${step === 1 ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
+                1. General
               </span>
-              <ChevronRight className="w-4 h-4 text-slate-600" />
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${step === 2 ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+              <span className={`text-[11px] sm:text-xs font-bold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap ${step === 2 ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
                 2. Clock & Rules
               </span>
-              <ChevronRight className="w-4 h-4 text-slate-600" />
-              <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${step === 3 ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
-                3. Participants ({formData.selectedPlayerIds.length})
+              <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
+              <span className={`text-[11px] sm:text-xs font-bold px-2 sm:px-2.5 py-1 rounded-full whitespace-nowrap ${step === 3 ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>
+                3. Players ({formData.selectedPlayerIds.length})
               </span>
             </div>
 

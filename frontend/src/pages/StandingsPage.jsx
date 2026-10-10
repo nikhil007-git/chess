@@ -80,29 +80,27 @@ export default function StandingsPage() {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-slate-300">
-            <thead className="bg-slate-950/70 text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
+        <div className="overflow-x-auto -mx-2 sm:mx-0">
+          <table className="w-full text-left text-xs sm:text-sm text-slate-300 min-w-[580px] sm:min-w-full">
+            <thead className="bg-slate-950/70 text-[10px] sm:text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
               <tr>
-                <th className="px-6 py-4 font-semibold text-center w-16">Rank</th>
-                <th className="px-6 py-4 font-semibold">Player</th>
-                <th className="px-6 py-4 font-semibold font-mono">Rating</th>
-                <th className="px-6 py-4 font-semibold text-center font-mono">Played</th>
-                <th className="px-6 py-4 font-semibold text-center font-mono">W / D / L</th>
-                <th className="px-6 py-4 font-semibold text-center font-mono">Byes</th>
-                <th className="px-6 py-4 font-semibold text-center font-mono text-amber-400">Points</th>
-                <th className="px-6 py-4 font-semibold text-right font-mono" title="Buchholz Tie-Break Score">
+                <th className="px-3 sm:px-6 py-3.5 sm:py-4 font-semibold text-center w-12 sm:w-16">Rank</th>
+                <th className="px-3 sm:px-6 py-3.5 sm:py-4 font-semibold">Player</th>
+                <th className="px-2 sm:px-6 py-3.5 sm:py-4 font-semibold font-mono">Rating</th>
+                <th className="px-2 sm:px-6 py-3.5 sm:py-4 font-semibold text-center font-mono">Pld</th>
+                <th className="px-2 sm:px-6 py-3.5 sm:py-4 font-semibold text-center font-mono">W/D/L</th>
+                <th className="px-2 sm:px-6 py-3.5 sm:py-4 font-semibold text-center font-mono">Bye</th>
+                <th className="px-3 sm:px-6 py-3.5 sm:py-4 font-semibold text-center font-mono text-amber-400">Pts</th>
+                <th className="px-3 sm:px-6 py-3.5 sm:py-4 font-semibold text-right font-mono" title="Buchholz Tie-Break Score">
                   BH
                 </th>
-                <th className="px-6 py-4 font-semibold text-right font-mono" title="Sonneborn-Berger Tie-Break Score">
+                <th className="px-3 sm:px-6 py-3.5 sm:py-4 font-semibold text-right font-mono" title="Sonneborn-Berger Tie-Break Score">
                   SB
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
               {standings.map((s) => {
-                const isPodium = s.rank <= 3;
-
                 return (
                   <tr
                     key={s.playerId}
@@ -113,17 +111,17 @@ export default function StandingsPage() {
                     }`}
                   >
                     {/* Rank with medal styling */}
-                    <td className="px-6 py-4 text-center">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
                       {s.rank === 1 ? (
-                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-md shadow-amber-400/20">
+                        <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-amber-400 text-slate-950 font-black text-xs shadow-md shadow-amber-400/20">
                           1
                         </span>
                       ) : s.rank === 2 ? (
-                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-300 text-slate-950 font-black text-xs">
+                        <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-slate-300 text-slate-950 font-black text-xs">
                           2
                         </span>
                       ) : s.rank === 3 ? (
-                        <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-amber-700 text-amber-100 font-black text-xs">
+                        <span className="inline-flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-amber-700 text-amber-100 font-black text-xs">
                           3
                         </span>
                       ) : (
@@ -134,41 +132,41 @@ export default function StandingsPage() {
                     </td>
 
                     {/* Player Info */}
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <Link
                         to={`/players/${s.playerId}`}
-                        className="font-bold text-white hover:text-amber-400 transition-colors block"
+                        className="font-bold text-white hover:text-amber-400 transition-colors block text-xs sm:text-sm truncate max-w-[140px] sm:max-w-none"
                       >
                         {s.player?.fullName}
                       </Link>
-                      <div className="text-xs text-slate-500">
+                      <div className="text-[10px] sm:text-xs text-slate-500 truncate max-w-[120px] sm:max-w-none">
                         {s.player?.club || 'Independent'}
                       </div>
                     </td>
 
                     {/* Rating */}
-                    <td className="px-6 py-4 font-mono font-bold text-slate-400 text-xs">
+                    <td className="px-2 sm:px-6 py-3 sm:py-4 font-mono font-bold text-slate-400 text-xs">
                       {s.initialRating}
                     </td>
 
                     {/* Games Played */}
-                    <td className="px-6 py-4 text-center font-mono text-slate-300">
+                    <td className="px-2 sm:px-6 py-3 sm:py-4 text-center font-mono text-slate-300 text-xs">
                       {s.played}
                     </td>
 
                     {/* Win / Draw / Loss */}
-                    <td className="px-6 py-4 text-center font-mono text-xs">
+                    <td className="px-2 sm:px-6 py-3 sm:py-4 text-center font-mono text-[11px] sm:text-xs">
                       <span className="text-emerald-400 font-semibold">{s.wins}</span>
-                      <span className="text-slate-500 mx-1">/</span>
+                      <span className="text-slate-500 mx-0.5 sm:mx-1">/</span>
                       <span className="text-amber-400 font-semibold">{s.draws}</span>
-                      <span className="text-slate-500 mx-1">/</span>
+                      <span className="text-slate-500 mx-0.5 sm:mx-1">/</span>
                       <span className="text-red-400 font-semibold">{s.losses}</span>
                     </td>
 
                     {/* Byes */}
-                    <td className="px-6 py-4 text-center font-mono text-xs text-slate-400">
+                    <td className="px-2 sm:px-6 py-3 sm:py-4 text-center font-mono text-xs text-slate-400">
                       {s.byes > 0 ? (
-                        <span className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold">
+                        <span className="px-1.5 sm:px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-bold text-[10px]">
                           {s.byes}
                         </span>
                       ) : (
@@ -177,17 +175,17 @@ export default function StandingsPage() {
                     </td>
 
                     {/* Total Points */}
-                    <td className="px-6 py-4 text-center font-mono text-base font-black text-amber-400">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-center font-mono text-sm sm:text-base font-black text-amber-400">
                       {s.points}
                     </td>
 
                     {/* Buchholz Tie-break */}
-                    <td className="px-6 py-4 text-right font-mono text-xs font-semibold text-slate-300">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-right font-mono text-xs font-semibold text-slate-300">
                       {s.buchholz}
                     </td>
 
                     {/* Sonneborn-Berger Tie-break */}
-                    <td className="px-6 py-4 text-right font-mono text-xs font-semibold text-slate-400">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 text-right font-mono text-xs font-semibold text-slate-400">
                       {s.sonnebornBerger}
                     </td>
                   </tr>

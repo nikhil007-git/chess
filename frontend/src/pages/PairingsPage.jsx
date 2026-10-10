@@ -200,7 +200,100 @@ export default function PairingsPage() {
                 </span>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Mobile Match Cards View */}
+              <div className="block sm:hidden divide-y divide-slate-800/80">
+                {currentRound.matches.map((m) => {
+                  const isBye = m.result === 'BYE';
+                  const isCompleted = m.status === 'COMPLETED';
+
+                  let resultDisplay = 'vs';
+                  if (m.result === 'WHITE_WIN') resultDisplay = '1 – 0';
+                  else if (m.result === 'BLACK_WIN') resultDisplay = '0 – 1';
+                  else if (m.result === 'DRAW') resultDisplay = '½ – ½';
+                  else if (isBye) resultDisplay = 'BYE (1 pt)';
+
+                  return (
+                    <div key={m.id} className="p-4 space-y-3">
+                      {/* Top bar: Board # & Result pill */}
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-mono font-bold text-amber-400">Board #{m.boardNumber}</span>
+                        <span
+                          className={`px-2.5 py-0.5 rounded-md font-mono font-bold text-xs ${
+                            isCompleted
+                              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                              : 'bg-slate-800 text-slate-400'
+                          }`}
+                        >
+                          {resultDisplay}
+                        </span>
+                      </div>
+
+                      {/* Opponents */}
+                      <div className="bg-slate-950/60 rounded-xl p-3 border border-slate-800/80 space-y-2">
+                        {/* White */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 truncate">
+                            <span className="w-2.5 h-2.5 rounded-full bg-white shrink-0 border border-slate-600"></span>
+                            <span className="font-semibold text-white text-xs truncate">
+                              {m.whitePlayer?.fullName || <span className="text-slate-500 italic">None</span>}
+                            </span>
+                          </div>
+                          {m.whitePlayer && (
+                            <span className="text-[11px] font-mono text-slate-400 shrink-0 ml-2">
+                              {m.whitePlayer.rating}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Black */}
+                        <div className="flex items-center justify-between pt-1 border-t border-slate-850">
+                          {isBye ? (
+                            <span className="text-xs text-slate-500 italic">No Opponent (Unpaired Bye)</span>
+                          ) : (
+                            <>
+                              <div className="flex items-center gap-2 truncate">
+                                <span className="w-2.5 h-2.5 rounded-full bg-slate-950 shrink-0 border border-slate-600"></span>
+                                <span className="font-semibold text-white text-xs truncate">
+                                  {m.blackPlayer?.fullName || <span className="text-slate-500 italic">None</span>}
+                                </span>
+                              </div>
+                              {m.blackPlayer && (
+                                <span className="text-[11px] font-mono text-slate-400 shrink-0 ml-2">
+                                  {m.blackPlayer.rating}
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center justify-end gap-2 pt-1">
+                        {!isBye && (
+                          <Link
+                            to={`/matches/${m.id}`}
+                            className="text-xs px-3 py-1.5 rounded-lg bg-slate-950 hover:bg-slate-800 text-slate-300 hover:text-amber-400 border border-slate-800 transition-colors flex items-center gap-1.5"
+                          >
+                            <Clock className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Arena Clock</span>
+                          </Link>
+                        )}
+                        {admin && !isCompleted && !isBye && (
+                          <button
+                            onClick={() => openResultModal(m)}
+                            className="text-xs px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition-colors"
+                          >
+                            Enter Result
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden sm:block overflow-x-auto">
                 <table className="w-full text-left text-sm text-slate-300">
                   <thead className="bg-slate-950/60 text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
                     <tr>

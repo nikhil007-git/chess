@@ -81,26 +81,26 @@ export default function TournamentDetailPage() {
               </p>
             )}
 
-            <div className="flex flex-wrap items-center gap-6 text-xs text-slate-400 pt-2">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs text-slate-400 pt-2">
               <span className="flex items-center gap-1.5">
-                <Clock className="w-4 h-4 text-amber-400" />
+                <Clock className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>{tournament.timeControlMinutes}m + {tournament.incrementSeconds}s Rapid</span>
               </span>
-              <span>•</span>
+              <span className="hidden sm:inline text-slate-600">•</span>
               <span className="flex items-center gap-1.5">
-                <ListOrdered className="w-4 h-4 text-amber-400" />
+                <ListOrdered className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>{tournament.roundsCount} Rounds</span>
               </span>
-              <span>•</span>
+              <span className="hidden sm:inline text-slate-600">•</span>
               <span className="flex items-center gap-1.5">
-                <Users className="w-4 h-4 text-amber-400" />
+                <Users className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>{tournament.participants?.length || 0} Registered Competitors</span>
               </span>
             </div>
           </div>
 
           {/* Quick Sub-navigation */}
-          <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
+          <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0 w-full sm:w-auto">
             {tournament.format === 'SWISS' ? (
               <>
                 <Link
@@ -135,21 +135,21 @@ export default function TournamentDetailPage() {
 
       {/* Participants Table */}
       <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+        <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between">
+          <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
             <Users className="w-5 h-5 text-amber-400" />
-            <span>Official Competitor Seedings ({tournament.participants?.length || 0})</span>
+            <span>Official Competitors ({tournament.participants?.length || 0})</span>
           </h2>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm text-slate-300">
             <thead className="bg-slate-950/60 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-800">
               <tr>
-                <th className="px-6 py-3.5 font-semibold">Seed</th>
-                <th className="px-6 py-3.5 font-semibold">Player</th>
-                <th className="px-6 py-3.5 font-semibold">Club / Org</th>
-                <th className="px-6 py-3.5 font-semibold font-mono">Tournament Rating</th>
-                <th className="px-6 py-3.5 font-semibold">Status</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-3.5 font-semibold text-center w-12 sm:w-16">Seed</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-3.5 font-semibold">Player</th>
+                <th className="hidden sm:table-cell px-6 py-3.5 font-semibold">Club / Org</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-3.5 font-semibold font-mono">Rating</th>
+                <th className="px-3 sm:px-6 py-3 sm:py-3.5 font-semibold">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/60">
@@ -160,30 +160,30 @@ export default function TournamentDetailPage() {
                   </td>
                 </tr>
               ) : (
-                tournament.participants.map((p) => (
-                  <tr key={p.id} className="hover:bg-slate-800/30 transition-colors">
-                    <td className="px-6 py-3.5 font-mono text-amber-400 font-bold">
-                      #{p.seed || '—'}
+                tournament.participants?.map((p) => (
+                  <tr key={p.id} className="hover:bg-slate-800/40 transition-colors">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 font-mono font-bold text-amber-400 text-center">
+                      #{p.seedNumber}
                     </td>
-                    <td className="px-6 py-3.5">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <Link
-                        to={`/players/${p.player.id}`}
-                        className="font-semibold text-white hover:text-amber-400 transition-colors"
+                        to={`/players/${p.playerId}`}
+                        className="font-bold text-white hover:text-amber-400 transition-colors block text-xs sm:text-sm truncate max-w-[130px] sm:max-w-none"
                       >
-                        {p.player.fullName}
+                        {p.player?.fullName}
                       </Link>
-                      {p.player.username && (
-                        <div className="text-xs text-slate-500">@{p.player.username}</div>
-                      )}
+                      <div className="text-[10px] text-slate-400 sm:hidden truncate max-w-[120px]">
+                        {p.player?.club || 'Independent'}
+                      </div>
                     </td>
-                    <td className="px-6 py-3.5 text-slate-400">
-                      {p.player.club || 'Independent'}
+                    <td className="hidden sm:table-cell px-6 py-4 text-slate-400 text-xs">
+                      {p.player?.club || 'Independent'}
                     </td>
-                    <td className="px-6 py-3.5 font-mono font-bold text-slate-200">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 font-mono font-bold text-slate-300 text-xs">
                       {p.initialRating}
                     </td>
-                    <td className="px-6 py-3.5">
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                         {p.status}
                       </span>
                     </td>

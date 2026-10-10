@@ -170,16 +170,26 @@ export default function BracketPage() {
         </div>
       ) : (
         /* Bracket Columns Viewer */
-        <div className="overflow-x-auto pb-6">
-          <div className="flex gap-8 min-w-max items-stretch">
-            {rounds.map((round, rIdx) => (
-              <div key={round.id} className="w-72 flex flex-col">
-                {/* Round Header */}
-                <div className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 mb-4 text-center">
-                  <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
-                    {getRoundLabel(rIdx, rounds.length)}
-                  </span>
-                </div>
+        <div className="space-y-3">
+          {/* Mobile Round Navigation Bar */}
+          <div className="flex sm:hidden items-center justify-between bg-slate-900/80 border border-slate-800 rounded-xl px-3.5 py-2 text-xs">
+            <span className="text-slate-400">Swipe bracket horizontally</span>
+            <span className="text-amber-400 font-bold flex items-center gap-1">
+              <span>{rounds.length} Rounds</span>
+              <span>↔</span>
+            </span>
+          </div>
+
+          <div className="overflow-x-auto pb-6 scroll-smooth touch-pan-x">
+            <div className="flex gap-4 sm:gap-8 min-w-max items-stretch">
+              {rounds.map((round, rIdx) => (
+                <div key={round.id} className="w-64 sm:w-72 flex flex-col">
+                  {/* Round Header */}
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl px-3 sm:px-4 py-2 sm:py-2.5 mb-3 sm:mb-4 text-center">
+                    <span className="text-xs font-bold uppercase tracking-wider text-amber-400">
+                      {getRoundLabel(rIdx, rounds.length)}
+                    </span>
+                  </div>
 
                 {/* Matches in Round */}
                 <div className="flex flex-col justify-around flex-1 gap-6">
@@ -279,6 +289,7 @@ export default function BracketPage() {
             ))}
           </div>
         </div>
+      </div>
       )}
 
       {/* Admin Result Adjudication Modal */}

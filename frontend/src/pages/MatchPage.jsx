@@ -213,10 +213,10 @@ export default function MatchPage() {
       </div>
 
       {/* High-Contrast Match Clocks (PRD Section 8) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
         {/* White Player Clock */}
         <div
-          className={`relative p-6 rounded-3xl border-2 transition-all flex flex-col justify-between ${
+          className={`relative p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all flex flex-col justify-between ${
             activePlayer === 'WHITE' && clockStatus === 'RUNNING'
               ? 'bg-slate-900 border-amber-400 shadow-xl shadow-amber-500/10 ring-2 ring-amber-400/20'
               : 'bg-slate-900/60 border-slate-800'
@@ -226,7 +226,7 @@ export default function MatchPage() {
             <div className="flex items-center gap-2.5">
               <span className="w-4 h-4 rounded-full bg-white border border-slate-400 shadow"></span>
               <div>
-                <h3 className="font-bold text-white text-base">
+                <h3 className="font-bold text-white text-sm sm:text-base">
                   {match.whitePlayer?.fullName || 'White Player'}
                 </h3>
                 <span className="text-xs text-slate-400 font-mono">
@@ -242,9 +242,9 @@ export default function MatchPage() {
             )}
           </div>
 
-          <div className="my-6 text-center">
+          <div className="my-4 sm:my-6 text-center">
             <div
-              className={`font-mono text-5xl sm:text-6xl font-black tracking-tight ${
+              className={`font-mono text-4xl sm:text-6xl font-black tracking-tight ${
                 isWhiteLow && clockStatus === 'RUNNING'
                   ? 'text-red-400 animate-pulse'
                   : activePlayer === 'WHITE'
@@ -261,14 +261,14 @@ export default function MatchPage() {
             )}
           </div>
 
-          <div className="text-xs text-slate-500 text-center font-mono">
+          <div className="text-[11px] sm:text-xs text-slate-500 text-center font-mono">
             Time Control: {match.timeControlMinutes}m + {match.incrementSeconds}s
           </div>
         </div>
 
         {/* Black Player Clock */}
         <div
-          className={`relative p-6 rounded-3xl border-2 transition-all flex flex-col justify-between ${
+          className={`relative p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all flex flex-col justify-between ${
             activePlayer === 'BLACK' && clockStatus === 'RUNNING'
               ? 'bg-slate-900 border-amber-400 shadow-xl shadow-amber-500/10 ring-2 ring-amber-400/20'
               : 'bg-slate-900/60 border-slate-800'
@@ -278,7 +278,7 @@ export default function MatchPage() {
             <div className="flex items-center gap-2.5">
               <span className="w-4 h-4 rounded-full bg-slate-950 border border-slate-600 shadow"></span>
               <div>
-                <h3 className="font-bold text-white text-base">
+                <h3 className="font-bold text-white text-sm sm:text-base">
                   {match.blackPlayer?.fullName || 'Black Player'}
                 </h3>
                 <span className="text-xs text-slate-400 font-mono">
@@ -294,9 +294,9 @@ export default function MatchPage() {
             )}
           </div>
 
-          <div className="my-6 text-center">
+          <div className="my-4 sm:my-6 text-center">
             <div
-              className={`font-mono text-5xl sm:text-6xl font-black tracking-tight ${
+              className={`font-mono text-4xl sm:text-6xl font-black tracking-tight ${
                 isBlackLow && clockStatus === 'RUNNING'
                   ? 'text-red-400 animate-pulse'
                   : activePlayer === 'BLACK'
@@ -313,7 +313,7 @@ export default function MatchPage() {
             )}
           </div>
 
-          <div className="text-xs text-slate-500 text-center font-mono">
+          <div className="text-[11px] sm:text-xs text-slate-500 text-center font-mono">
             Time Control: {match.timeControlMinutes}m + {match.incrementSeconds}s
           </div>
         </div>

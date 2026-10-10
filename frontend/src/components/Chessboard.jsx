@@ -96,7 +96,7 @@ export default function Chessboard({ fen, onMove, disabled = false, orientation 
   };
 
   return (
-    <div className="w-full max-w-[460px] aspect-square select-none rounded-2xl overflow-hidden border-2 border-slate-700 shadow-2xl bg-slate-900 mx-auto">
+    <div className="w-full max-w-[min(94vw,460px)] aspect-square select-none rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-slate-700 shadow-2xl bg-slate-900 mx-auto touch-manipulation">
       <div className="grid grid-rows-8 h-full w-full">
         {displayRanks.map((rank, rIdx) => (
           <div key={rank} className="grid grid-cols-8 h-full">
@@ -111,9 +111,9 @@ export default function Chessboard({ fen, onMove, disabled = false, orientation 
                 <div
                   key={square}
                   onClick={() => handleSquareClick(square)}
-                  className={`relative flex items-center justify-center transition-colors cursor-pointer ${
+                  className={`relative flex items-center justify-center transition-colors cursor-pointer active:scale-95 touch-manipulation ${
                     isSelected
-                      ? 'bg-amber-400/70'
+                      ? 'bg-amber-400/80 ring-2 ring-inset ring-amber-300'
                       : isLight
                       ? 'bg-slate-300 hover:bg-slate-200 text-slate-900'
                       : 'bg-slate-700 hover:bg-slate-650 text-slate-100'
@@ -121,25 +121,25 @@ export default function Chessboard({ fen, onMove, disabled = false, orientation 
                 >
                   {/* Square label on corners */}
                   {fIdx === 0 && (
-                    <span className={`absolute top-0.5 left-1 text-[9px] font-bold opacity-60 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                    <span className={`absolute top-0.5 left-1 text-[8px] sm:text-[9px] font-bold opacity-60 pointer-events-none ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                       {rank}
                     </span>
                   )}
                   {rIdx === 7 && (
-                    <span className={`absolute bottom-0.5 right-1 text-[9px] font-bold opacity-60 ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
+                    <span className={`absolute bottom-0.5 right-1 text-[8px] sm:text-[9px] font-bold opacity-60 pointer-events-none ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>
                       {file}
                     </span>
                   )}
 
                   {/* Move hint dot */}
                   {isPossible && (
-                    <span className={`absolute w-3.5 h-3.5 rounded-full z-10 ${piece ? 'ring-4 ring-amber-500 bg-transparent' : 'bg-amber-500/80'}`}></span>
+                    <span className={`absolute w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full z-10 pointer-events-none ${piece ? 'ring-4 ring-amber-500 bg-transparent' : 'bg-amber-500/80'}`}></span>
                   )}
 
                   {/* Piece */}
                   {piece && (
                     <span
-                      className={`text-3xl sm:text-4xl filter drop-shadow font-serif leading-none ${
+                      className={`text-2xl sm:text-4xl filter drop-shadow font-serif leading-none select-none pointer-events-none ${
                         piece.color === 'w' ? 'text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)]' : 'text-slate-950 drop-shadow-[0_1px_1px_rgba(255,255,255,0.4)]'
                       }`}
                     >
