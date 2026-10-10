@@ -1,0 +1,143 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Admin {
+  id           String   @id @default(uuid())
+  username     String   @unique
+  passwordHash String
+  role         String   @default("ADMIN") // SUPER_ADMIN, ADMIN, ARBITER
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Player {
+  id           String                  @id @default(uuid())
+  fullName     String
+  username     String?                 @unique
+  email        String?                 @unique
+  rating       Int                     @default(1200)
+  club         String?
+  status       String                  @default("ACTIVE") // ACTIVE, ARCHIVED
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+
+  participants TournamentParticipant[]
+  whiteMatches Match[]                 @relation("WhitePlayer")
+  blackMatches Match[]                 @relation("BlackPlayer")
+  wonMatches   Match[]                 @relation("MatchWinner")
+}
+
+model Tournament {
+  id                 String                  @id @default(uuid())
+  name               String
+  description        String?
+  format             String                  @default("SWISS") // SWISS, SINGLE_ELIMINATION
+  status             String                  @default("DRAFT") // DRAFT, UPCOMING, IN_PROGRESS, COMPLETED
+  visibility         String                  @default("PUBLIC") // PUBLIC, UNPUBLISHED
+  roundsCount        Int                     @default(5)
+  timeControlMinutes Int                     @default(10)
+  incrementSeconds   Int                     @default(0)
+  scoringRules       String?                 // JSON: win=1, draw=0.5, loss=0, bye=1
+  tieBreakRules      String?                 // JSON: ["buchholz", "sonneborn_berger", "head_to_head"]
+  championId         String?
+  createdAt          DateTime                @default(now())
+  updatedAt          DateTime                @updatedAt
+
+  participants       TournamentParticipant[]
+  rounds             Round[]
+  matches            Match[]
+  events             MatchEvent[]
+}
+
+model TournamentParticipant {
+  id            String     @id @default(uuid())
+  tournamentId  String
+  playerId      String
+  seed          Int?
+  initialRating Int        @default(1200)
+  status        String     @default("ACTIVE") // ACTIVE, WITHDRAWN
+  createdAt     DateTime   @default(now())
+
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  player        Player     @relation(fields: [playerId], references: [id], onDelete: Restrict)
+
+  @@unique([tournamentId, playerId])
+}
+
+model Round {
+  id                      String     @id @default(uuid())
+  tournamentId            String
+  roundNumber             Int
+  status                  String     @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED
+  pairingAlgorithmVersion String     @default("1.0")
+  generatedAt             DateTime   @default(now())
+  publishedAt             DateTime?
+  createdAt               DateTime   @default(now())
+
+  tournament              Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  matches                 Match[]
+
+  @@unique([tournamentId, roundNumber])
+}
+
+model Match {
+  id                 String       @id @default(uuid())
+  tournamentId       String
+  roundId            String?
+  boardNumber        Int          @default(1)
+  whitePlayerId      String?
+  blackPlayerId      String?
+  status             String       @default("SCHEDULED") // SCHEDULED, READY, IN_PROGRESS, PAUSED, AWAITING_ADJUDICATION, COMPLETED, CANCELLED
+  result             String?      // WHITE_WIN, BLACK_WIN, DRAW, WHITE_FORFEIT, BLACK_FORFEIT, BYE
+  winnerId           String?
+  
+  // Clock state (server-authoritative)
+  timeControlMinutes Int          @default(10)
+  incrementSeconds   Int          @default(0)
+  whiteTimeRemaining Float        @default(600) // seconds
+  blackTimeRemaining Float        @default(600) // seconds
+  activePlayer       String?      // WHITE, BLACK
+  clockStatus        String       @default("STOPPED") // STOPPED, RUNNING, PAUSED
+  lastClockUpdate    DateTime?
+  
+  // Single Elimination linkage
+  nextMatchId        String?
+  nextSlot           String?      // WHITE, BLACK
+
+  // Game state & moves
+  movesHistory       String?      // PGN or JSON array of moves
+  currentFen         String?      @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  notes              String?
+  
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  tournament         Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  round              Round?       @relation(fields: [roundId], references: [id], onDelete: SetNull)
+  whitePlayer        Player?      @relation("WhitePlayer", fields: [whitePlayerId], references: [id], onDelete: SetNull)
+  blackPlayer        Player?      @relation("BlackPlayer", fields: [blackPlayerId], references: [id], onDelete: SetNull)
+  winner             Player?      @relation("MatchWinner", fields: [winnerId], references: [id], onDelete: SetNull)
+  events             MatchEvent[]
+}
+
+model MatchEvent {
+  id           String      @id @default(uuid())
+  matchId      String?
+  tournamentId String?
+  actor        String      @default("SYSTEM") // ADMIN, SYSTEM, ARBITER
+  eventType    String      // CLOCK_START, CLOCK_PAUSE, MOVE_PLAYED, RESULT_SUBMITTED, RESULT_CORRECTED, FLAG_FALL
+  details      String?     // Text explanation or reason
+  beforeValue  String?     // JSON
+  afterValue   String?     // JSON
+  createdAt    DateTime    @default(now())
+
+  match        Match?      @relation(fields: [matchId], references: [id], onDelete: Cascade)
+  tournament   Tournament? @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+}
